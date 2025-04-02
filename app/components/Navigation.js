@@ -22,10 +22,7 @@ export default function Navigation() {
               <button onClick={() => signOut()} className="bg-background text-foreground px-4 py-2 rounded">Sign Out</button>
             </>
           ) : (
-            <>
-              <Link href="/signin" className="mr-4">Sign In</Link>
-              <Link href="/signup" className="bg-background text-foreground px-4 py-2 rounded">Sign Up</Link>
-            </>
+            null
           )}
         </div>
       </div>

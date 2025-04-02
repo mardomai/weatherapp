@@ -17,6 +17,14 @@ export default function WeatherSearch() {
     setLoading(true);
     setError(null);
 
+    // Check local storage for cached data
+    const cachedData = localStorage.getItem(city);
+    if (cachedData) {
+      setWeather(JSON.parse(cachedData));
+      setLoading(false);
+      return;
+    }
+
     try {
       const response = await fetch(
         `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`
@@ -28,6 +36,8 @@ export default function WeatherSearch() {
 
       const data = await response.json();
       setWeather(data);
+      // Cache the data in local storage
+      localStorage.setItem(city, JSON.stringify(data));
     } catch (err) {
       setError(err.message);
     } finally {
@@ -58,12 +68,18 @@ export default function WeatherSearch() {
       {error && <p className="text-red-500">{error}</p>}
 
       {weather && (
-        <div className="bg-foreground text-background p-4 rounded">
+        <div className="bg-gray-200 text-background p-4 rounded">
           <h2 className="text-2xl font-bold">{weather.name}</h2>
           <p className="text-xl">{weather.main.temp}°C</p>
           <p>{weather.weather[0].description}</p>
           <p>Humidity: {weather.main.humidity}%</p>
           <p>Wind Speed: {weather.wind.speed} m/s</p>
+          {/* Display weather icon */}
+          <img
+            src={`http://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}
+            alt={weather.weather[0].description}
+            className="mx-auto"
+          />
         </div>
       )}
     </div>
